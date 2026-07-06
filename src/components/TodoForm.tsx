@@ -1,11 +1,13 @@
 import { useState, useRef } from 'react';
 import Button from './Button';
 import { ICONS } from '../assets/icons/index';
+import { useTasksContext } from '../hooks/useTasksContext';
 import type { Task } from '../types';
 
 const TodoForm = () => {
   const [title, setTitle] = useState<Task['title']>('');
   const inputElement = useRef<HTMLInputElement>(null);
+  const { addTask } = useTasksContext();
 
   const handleFormSubmit = (e: React.SubmitEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -15,6 +17,7 @@ const TodoForm = () => {
       return;
     }
 
+    addTask(title);
     setTitle('');
     inputElement.current?.focus();
   };

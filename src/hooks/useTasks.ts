@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import useTasksLocalStorage from './useTasksLocalStorage';
 import type { Task } from '../types';
 
 export type UseTasksReturn = {
@@ -11,7 +12,10 @@ export type UseTasksReturn = {
 };
 
 const useTasks = (): UseTasksReturn => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const { savedTasks, saveTasks } = useTasksLocalStorage();
+  const [tasks, setTasks] = useState<Task[]>(savedTasks ?? []);
+
+  useEffect(() => saveTasks(tasks), [tasks, saveTasks]);
 
   const addTask = (title: Task['title']): void => {
     const newTask: Task = {
