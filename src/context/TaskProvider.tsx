@@ -6,13 +6,18 @@ type Props = {
 };
 
 export const TaskProvider = ({ children }: Props) => {
-  const { tasks, addTask } = useTasks();
+  const { tasks, addTask, updateCompleted, deleteTask, updateTitle, toggleEditMode } =
+    useTasks();
 
   return (
     <TaskContext.Provider
       value={{
         tasks,
         addTask,
+        updateCompleted,
+        deleteTask,
+        updateTitle,
+        toggleEditMode,
       }}
     >
       {children}
