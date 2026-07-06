@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import TaskFilter from './TaskFilter';
 import Button from './Button';
 import { ICONS } from '../assets/icons/index';
 import { useTasksContext } from '../hooks/useTasksContext';
@@ -28,6 +29,7 @@ const TodoForm = () => {
 
   return (
     <form id='task-form' className='row pb-3 pb-lg-4' onSubmit={handleFormSubmit}>
+      <TaskFilter />
       <div className='col'>
         <input
           type='text'
