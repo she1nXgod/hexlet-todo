@@ -1,4 +1,5 @@
 import PageTitle from './components/PageTitle';
+import TodoBox from './components/TodoBox';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         </video>
       </div>
       <PageTitle>Todo</PageTitle>
+      <TodoBox />
     </>
   );
 };
