@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import useTasksLocalStorage from './useTasksLocalStorage';
 import toast from 'react-hot-toast';
 import { arrayMove } from '@dnd-kit/sortable';
@@ -21,66 +21,74 @@ const useTasks = (): UseTasksReturn => {
 
   useEffect(() => saveTasks(tasks), [tasks, saveTasks]);
 
-  const addTask = (title: Task['title']): void => {
+  const addTask = useCallback((title: Task['title']): void => {
     const newTask: Task = {
       id: crypto.randomUUID(),
-      title: title,
+      title,
       completed: false,
       editMode: false,
     };
     setTasks((prev) => [newTask, ...prev]);
-
     toast.success('Task created successfully');
-  };
+  }, []);
 
-  const updateCompleted = (id: Task['id']): void => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
+  const updateCompleted = useCallback((id: Task['id']): void => {
+    setTasks((prev) =>
+      prev.map((task) =>
         task.id === id ? { ...task, completed: !task.completed } : task,
       ),
     );
-  };
+  }, []);
 
-  const deleteTask = (id: Task['id']): void => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  const deleteTask = useCallback((id: Task['id']): void => {
+    setTasks((prev) => prev.filter((task) => task.id !== id));
     toast('Task deleted', { icon: '🗑️' });
-  };
+  }, []);
 
-  const toggleEditMode = (id: Task['id']): void =>
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, editMode: !task.editMode } : task,
-      ),
+  const toggleEditMode = useCallback((id: Task['id']): void => {
+    setTasks((prev) =>
+      prev.map((task) => (task.id === id ? { ...task, editMode: !task.editMode } : task)),
     );
+  }, []);
 
-  const updateTitle = (id: Task['id'], newTitle: Task['title']): void => {
-    if (!newTitle.trim()) {
+  const updateTitle = useCallback((id: Task['id'], newTitle: Task['title']): void => {
+    const trimmedTitle = newTitle.trim();
+
+    if (!trimmedTitle) {
       toast.error('Please enter a task title');
       return;
     }
 
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => (task.id === id ? { ...task, title: newTitle } : task)),
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id ? { ...task, title: trimmedTitle, editMode: false } : task,
+      ),
     );
-    toggleEditMode(id);
     toast('Task updated', { icon: '✏️' });
-  };
+  }, []);
 
-  const getTaskPos = (id: Task['id']): number =>
-    tasks.findIndex((task) => task.id === id);
+  const taskPositionMap = useMemo(() => {
+    return new Map<Task['id'], number>(tasks.map((task, index) => [task.id, index]));
+  }, [tasks]);
 
-  const handleDragEnd = (event: DragEndEvent): void => {
-    const { active, over } = event;
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent): void => {
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
 
-    if (!over || active.id === over.id) return;
+      const activeId = String(active.id);
+      const overId = String(over.id);
 
-    setTasks((tasks) => {
-      const originalPos = getTaskPos(String(active.id));
-      const newPos = getTaskPos(String(over.id));
+      setTasks((prevTasks) => {
+        const originalPos = taskPositionMap.get(activeId);
+        const newPos = taskPositionMap.get(overId);
 
-      return arrayMove(tasks, originalPos, newPos);
-    });
-  };
+        if (originalPos === undefined || newPos === undefined) return prevTasks;
+        return arrayMove(prevTasks, originalPos, newPos);
+      });
+    },
+    [taskPositionMap],
+  );
 
   return {
     tasks,
