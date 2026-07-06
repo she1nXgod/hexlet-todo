@@ -1,5 +1,7 @@
 # 📝 Todo App
 
+[![Maintainability](https://qlty.sh/gh/she1nXgod/projects/hexlet-todo/maintainability.svg)](https://qlty.sh/gh/she1nXgod/projects/hexlet-todo)
+
 > Minimalist task manager with drag-and-drop sorting and smooth animations
 
 ### [🌐 **Demo**](https://react-todo-app-beige-sigma.vercel.app/)
