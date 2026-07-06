@@ -69,3 +69,28 @@
   font-family: var(--font-family-base);
   color: var(--color-text-primary);
 }
+
+.logo {
+  position: absolute;
+}
+
+.logo h1 {
+  color: var(--color-text-secondary);
+  font-family: 'Pinyon Script', cursive;
+  font-size: 75px;
+  font-weight: 400;
+
+  background: linear-gradient(to right, #fff 20%, #888888 40%, #fff 60%, #fff 80%);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: shine 5s linear infinite;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
