@@ -228,3 +228,13 @@
   width: 25px;
   transition: var(--transition-base);
 }
+
+.drag-handle {
+  padding-top: 1px;
+  transition: var(--transition-fast);
+  cursor: grab;
+}
+
+.drag-handle:hover {
+  opacity: 0.6;
+}

@@ -7,8 +7,15 @@ type Props = {
 };
 
 export const TaskProvider = ({ children }: Props) => {
-  const { tasks, addTask, updateCompleted, deleteTask, updateTitle, toggleEditMode } =
-    useTasks();
+  const {
+    tasks,
+    addTask,
+    updateCompleted,
+    deleteTask,
+    updateTitle,
+    toggleEditMode,
+    handleDragEnd,
+  } = useTasks();
 
   const { currentFilter, setFilter, filteredTasks } = useTasksFilter(tasks);
 
@@ -24,6 +31,7 @@ export const TaskProvider = ({ children }: Props) => {
         deleteTask,
         updateTitle,
         toggleEditMode,
+        handleDragEnd,
       }}
     >
       {children}

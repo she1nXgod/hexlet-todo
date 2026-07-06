@@ -1,5 +1,7 @@
 import Button from './Button';
 import { ICONS } from '../assets/icons/index';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import type { TaskData } from '../types';
 import { useTasksContext } from '../hooks/useTasksContext';
 
@@ -7,6 +9,9 @@ type TaskViewProps = TaskData;
 
 const TaskView = ({ id, title, completed }: TaskViewProps) => {
   const { updateCompleted, toggleEditMode, deleteTask } = useTasksContext();
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id,
+  });
 
   const handleToggle = (): void => updateCompleted(id);
 
@@ -20,8 +25,17 @@ const TaskView = ({ id, title, completed }: TaskViewProps) => {
     deleteTask(id);
   };
 
+  const styleDnd = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
+
   return (
     <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={styleDnd}
       className='task d-flex align-items-center gap-3 mb-4'
       data-task-id={id}
       onClick={handleToggle}
