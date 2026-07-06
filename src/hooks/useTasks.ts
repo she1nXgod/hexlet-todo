@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import useTasksLocalStorage from './useTasksLocalStorage';
+import toast from 'react-hot-toast';
 import { arrayMove } from '@dnd-kit/sortable';
 import type { Task } from '../types';
 import type { DragEndEvent } from '@dnd-kit/core';
@@ -28,6 +29,8 @@ const useTasks = (): UseTasksReturn => {
       editMode: false,
     };
     setTasks((prev) => [newTask, ...prev]);
+
+    toast.success('Task created successfully');
   };
 
   const updateCompleted = (id: Task['id']): void => {
@@ -40,6 +43,7 @@ const useTasks = (): UseTasksReturn => {
 
   const deleteTask = (id: Task['id']): void => {
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+    toast('Task deleted', { icon: '🗑️' });
   };
 
   const toggleEditMode = (id: Task['id']): void =>
@@ -51,6 +55,7 @@ const useTasks = (): UseTasksReturn => {
 
   const updateTitle = (id: Task['id'], newTitle: Task['title']): void => {
     if (!newTitle.trim()) {
+      toast.error('Please enter a task title');
       return;
     }
 
@@ -58,6 +63,7 @@ const useTasks = (): UseTasksReturn => {
       prevTasks.map((task) => (task.id === id ? { ...task, title: newTitle } : task)),
     );
     toggleEditMode(id);
+    toast('Task updated', { icon: '✏️' });
   };
 
   const getTaskPos = (id: Task['id']): number =>

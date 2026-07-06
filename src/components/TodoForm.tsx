@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import TaskFilter from './TaskFilter';
+import toast from 'react-hot-toast';
 import Button from './Button';
 import { ICONS } from '../assets/icons/index';
 import { useTasksContext } from '../hooks/useTasksContext';
@@ -13,6 +14,7 @@ const TodoForm = () => {
   const handleFormSubmit = (e: React.SubmitEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (!title.trim()) {
+      toast.error('Please enter a task title');
       setTitle('');
       inputElement.current?.focus();
       return;
